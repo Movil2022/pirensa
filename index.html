@@ -14,6 +14,7 @@
             --white: #ffffff;
             --border-radius: 8px;
             --box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --header-height-approx: 104px; /* Aproximación para cálculos iniciales */
         }
 
         body {
@@ -33,7 +34,7 @@
             padding: 20px 0;
         }
 
-        /* Header */
+        /* Header con animación de brillo */
         header {
             background-color: var(--primary-color);
             color: var(--white);
@@ -43,8 +44,27 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden; /* Para la animación de brillo */
         }
-
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%; /* Inicia fuera de la vista */
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            animation: headerShine 5s infinite linear;
+            z-index: 1;
+        }
+        @keyframes headerShine {
+            0% { left: -75%; }
+            100% { left: 125%; }
+        }
+        header .container {
+            position: relative; /* Para que el contenido esté sobre el brillo */
+            z-index: 2;
+        }
         header h1 {
             margin: 0;
             font-size: 2.5rem;
@@ -56,59 +76,82 @@
             opacity: 0.9;
         }
 
-        /* Navigation */
+        /* Navigation - Preparada para ser colapsable */
         nav {
             background-color: var(--secondary-color);
-            padding: 0.8rem 0;
+            padding: 0.5rem 0; /* Reducido padding para móvil */
             text-align: center;
             position: sticky;
-            /* Ajuste del top para la navegación fija debajo del header */
-            /* Alto del header: h1 (2.5rem) + p (1.1rem) + padding (1.5rem*2) ~= 6.6rem */
-            /* Puedes ajustar el valor numérico si el contenido del header cambia */
-            top: 104px; /* Aproximación basada en rems y paddings del header */
-            z-index: 999; /* Asegura que esté sobre el contenido pero debajo de modales, etc. */
+            top: var(--header-height-approx); /* Se ajustará con JS */
+            z-index: 999;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        
+        .nav-container {
+            display: flex;
+            justify-content: space-between; /* Para el logo/título y el botón hamburguesa */
+            align-items: center;
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .nav-brand { /* Opcional, si quieres un logo/nombre aquí */
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
         nav ul {
             list-style: none;
             padding: 0;
             margin: 0;
+            display: flex; /* Por defecto para desktop */
+            flex-direction: row;
         }
-
         nav ul li {
-            display: inline-block;
             margin: 0 15px;
         }
-
         nav ul li a {
             color: var(--white);
             text-decoration: none;
             font-weight: 500;
-            padding: 5px 10px;
+            padding: 8px 12px; /* Aumentado padding para mejor clic */
             border-radius: 4px;
             transition: background-color 0.3s ease;
+            display: block;
         }
-
         nav ul li a:hover, nav ul li a.active {
             background-color: rgba(255,255,255,0.2);
         }
 
+        /* Hamburger Menu Button */
+        .menu-toggle {
+            display: none; /* Oculto por defecto, visible en móviles */
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
         /* Sections */
         section {
-            padding: 60px 20px; /* Aumentado padding para mejor espaciado con nav fija */
+            padding: 60px 20px;
             border-bottom: 1px solid #e0e0e0;
+            position: relative; /* Para animaciones de fondo */
+            overflow: hidden; /* Para que las animaciones no se desborden feo */
         }
         section:last-of-type {
             border-bottom: none;
         }
-
         section h2 {
             text-align: center;
             color: var(--primary-color);
             font-size: 2rem;
             margin-bottom: 30px;
             position: relative;
+            z-index: 2; /* Encima de animaciones de fondo */
         }
         section h2::after {
             content: '';
@@ -118,22 +161,92 @@
             background-color: var(--secondary-color);
             margin: 10px auto 0;
         }
+        .section-content { /* Contenedor para el texto de la sección */
+            position: relative;
+            z-index: 2;
+        }
 
         .section-light {
             background-color: var(--light-bg);
         }
 
+        /* Animación de fondo para "Actividad Principal" - Líneas moviéndose */
+        #actividad::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(45deg, rgba(0,0,0,0.03) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.03) 75%),
+                linear-gradient(45deg, rgba(0,0,0,0.03) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.03) 75%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            animation: 도시배경 10s linear infinite;
+            opacity: 0.5;
+            z-index: 1;
+        }
+        @keyframes 도시배경 { /* urbanBackground en coreano para evitar colisiones */
+            0% { background-position: 0 0, 30px 30px; }
+            100% { background-position: 60px 60px, 90px 90px; }
+        }
+
+        /* Animación de fondo para "Posicionamiento en el Mercado" - Gráfico subiendo */
+        #mercado::before {
+            content: "";
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 400px;
+            height: 0%; /* Inicia con altura 0 */
+            background: linear-gradient(to top, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.05));
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            animation: 성장그래프 3s ease-out forwards; /* growthChart en coreano */
+            /* La animación se ejecutará una vez al cargar la página o al scrollear a ella (si se implementa con Intersection Observer) */
+            /* Para que sea un bucle suave, sería más complejo */
+            z-index: 1;
+            opacity: 0.7;
+        }
+        @keyframes 성장그래프 {
+            0% { height: 0%; opacity: 0; }
+            100% { height: 50%; opacity: 0.7; } /* Crece hasta la mitad de la sección */
+        }
+         /* Para reiniciar la animación de mercado al scrollear a la sección (opcional) */
+        #mercado.animate-section::before {
+            animation: 성장그래프 3s ease-out forwards;
+        }
+
+
+        /* Animación de fondo para "Nuestros Clientes" - Ondas suaves */
+        #clientes::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                linear-gradient(315deg, rgba(230, 126, 34, 0.05) 25%, transparent 25%) -50px 0,
+                linear-gradient(45deg, rgba(230, 126, 34, 0.05) 25%, transparent 25%) -50px 0,
+                linear-gradient(315deg, rgba(52, 152, 219, 0.07) 50%, transparent 50%) 0px 0,
+                linear-gradient(45deg, rgba(52, 152, 219, 0.07) 50%, transparent 50%) 0px 0;
+            background-size: 100px 100px;
+            animation: 고객물결 8s linear infinite; /* customerWaves en coreano */
+            opacity: 0.6;
+            z-index: 1;
+        }
+        @keyframes 고객물결 {
+            0% { background-position: -100px 0, -100px 0, 0px 0, 0px 0; }
+            100% { background-position: 0px 0, 0px 0, 100px 0, 100px 0; }
+        }
+
+
         /* Hero Section */
         .hero {
-            /* 
-              REEMPLAZA ESTA URL DE IMAGEN con una propia o una de stock de alta calidad.
-              Ejemplo de Unsplash (puede cambiar o no estar disponible a largo plazo):
-            */
             background: linear-gradient(rgba(44, 62, 80, 0.7), rgba(44, 62, 80, 0.7)), url('https://images.unsplash.com/photo-1503428593586-e225b39bddfe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
             color: var(--white);
             text-align: center;
             padding: 100px 20px;
-            min-height: 350px; /* Un poco más alto para impacto */
+            min-height: 350px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -161,11 +274,11 @@
             box-shadow: var(--box-shadow);
         }
         .cta-button:hover {
-            background-color: #d35400; /* Darker orange */
+            background-color: #d35400;
             transform: translateY(-2px);
         }
 
-        /* Cards for specific sections */
+        /* Cards */
         .card-container {
             display: flex;
             flex-wrap: wrap;
@@ -177,7 +290,7 @@
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             padding: 25px;
-            flex: 1 1 300px; /* Flex grow, shrink, basis */
+            flex: 1 1 300px;
             max-width: 400px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -190,33 +303,16 @@
             margin-top: 0;
             font-size: 1.4rem;
         }
-        .card ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        .card ul li {
-            padding-left: 20px;
-            position: relative;
-            margin-bottom: 8px;
-        }
-        .card ul li::before {
-            content: '✓';
-            color: var(--accent-color);
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
+        .card ul { list-style: none; padding-left: 0; }
+        .card ul li { padding-left: 20px; position: relative; margin-bottom: 8px; }
+        .card ul li::before { content: '✓'; color: var(--accent-color); position: absolute; left: 0; font-weight: bold; }
 
-        /* Specific section styling */
-        #administracion .team-member {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        #administracion .team-member strong {
-            display: block;
-            font-size: 1.1rem;
-            color: var(--primary-color);
-        }
+        #administracion .team-member { text-align: center; margin-bottom: 20px; }
+        #administracion .team-member strong { display: block; font-size: 1.1rem; color: var(--primary-color); }
+
+        /* Contact Info */
+        .contact-details p { margin-bottom: 10px; font-size: 1rem; }
+        .contact-details strong { color: var(--primary-color); }
 
         /* Footer */
         footer {
@@ -226,169 +322,177 @@
             padding: 25px 0;
             font-size: 0.9rem;
         }
-        footer p {
-            margin: 0;
-        }
-        
-        /* Contact Info */
-        .contact-details p {
-            margin-bottom: 10px;
-            font-size: 1rem;
-        }
-        .contact-details strong {
-            color: var(--primary-color);
-        }
-
+        footer p { margin: 0; }
 
         /* Responsive Adjustments */
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
+            header h1 { font-size: 2rem; }
+            header p { font-size: 1rem; }
+
+            .menu-toggle { display: block; }
             nav {
-                top: 86px; /* Ajuste para header más pequeño en mobile */
+                /* top: se ajusta con JS */
+                padding: 0.5rem 0;
+            }
+            .nav-container {
+                flex-wrap: wrap; /* Permite que el ul pase abajo si es necesario */
+                 justify-content: flex-end; /* Botón a la derecha */
+            }
+            nav ul {
+                display: none; /* Oculto por defecto en móvil */
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--secondary-color); /* Fondo para el menú desplegado */
+                position: absolute; /* Para que no empuje el contenido de la nav-bar */
+                top: 100%; /* Debajo de la barra de navegación */
+                left: 0;
+                box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+                padding: 10px 0;
+            }
+            nav ul.active {
+                display: flex; /* Mostrar cuando está activo */
             }
             nav ul li {
-                display: block;
-                margin: 10px 0;
+                margin: 0;
+                width: 100%;
+                text-align: center;
             }
-            .hero h1 {
-                font-size: 2.5rem;
+            nav ul li a {
+                padding: 12px 15px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
             }
-            .hero p {
-                font-size: 1.1rem;
+            nav ul li:last-child a {
+                border-bottom: none;
             }
-            .card-container {
+            
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1.1rem; }
+            section { padding: 40px 15px; }
+            section h2 { font-size: 1.8rem; }
+
+            .card-container { flex-direction: column; align-items: center; }
+            .card { width: 90%; max-width: none; }
+
+            #contacto .container > div { /* Para las dos columnas de contacto */
                 flex-direction: column;
-                align-items: center;
             }
-            .card {
-                width: 90%;
-                max-width: none;
+            #contacto .container > div > div { /* Cada item (info y form) */
+                 max-width: 100%;
+                 margin-bottom: 30px;
+            }
+             #mercado::before { /* Ajustar animación para móviles */
+                width: 95%;
             }
         }
     </style>
 </head>
 <body>
 
-    <header>
+    <header id="pageHeader">
         <div class="container">
             <h1>PIREN S.A.</h1>
             <p>Liderazgo en Desarrollo Inmobiliario y Gestión Forestal Estratégica</p>
         </div>
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="#historia">Historia</a></li>
-            <li><a href="#actividad">Actividad</a></li>
-            <li><a href="#servicios">Servicios</a></li>
-            <li><a href="#mercado">Mercado</a></li>
-            <li><a href="#administracion">Administración</a></li>
-            <!-- <li><a href="#activos">Activos</a></li> -->
-            <li><a href="#contacto">Contacto</a></li>
-        </ul>
+    <nav id="mainNav">
+        <div class="nav-container">
+            <!-- <a href="#home" class="nav-brand">PIREN S.A.</a> Logo/nombre opcional aquí -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+                &#9776; <!-- Símbolo de hamburguesa -->
+            </button>
+            <ul id="navMenu">
+                <li><a href="#historia">Historia</a></li>
+                <li><a href="#actividad">Actividad</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#mercado">Mercado</a></li>
+                <li><a href="#administracion">Administración</a></li>
+                <!-- <li><a href="#activos">Activos</a></li> La sección de activos está oculta -->
+                <li><a href="#clientes">Clientes</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
     </nav>
 
     <section class="hero" id="home">
-        <!-- El h1 del hero es diferente al h1 del header, no es redundante semánticamente -->
         <h1>Transformando el Paisaje Urbano y Rural</h1>
         <p>Más de cuatro décadas de experiencia en desarrollo inmobiliario y gestión forestal, impulsando el crecimiento y la valorización en CABA y sus alrededores.</p>
         <a href="#contacto" class="cta-button">Conózcanos Más</a>
     </section>
 
     <section id="historia" class="container">
-        <h2>Nuestra Trayectoria</h2>
-        <p>Piren S.A. fue constituida el 23 de noviembre de 1978. Desde sus inicios, la empresa se enfocó en el desarrollo inmobiliario y la explotación forestal en la Ciudad Autónoma de Buenos Aires (CABA) y sus alrededores. A lo largo de más de cuatro décadas, Piren S.A. ha evolucionado significativamente, consolidando su presencia en el sector inmobiliario.</p>
-        <p>En los últimos dos años, la compañía experimentó un crecimiento exponencial de sus ingresos, alcanzando un incremento del <strong>400% entre 2023 y 2024</strong>, impulsado principalmente por la expansión de sus servicios inmobiliarios.</p>
+        <div class="section-content">
+            <h2>Nuestra Trayectoria</h2>
+            <p>Piren S.A. fue constituida el 23 de noviembre de 1978. Desde sus inicios, la empresa se enfocó en el desarrollo inmobiliario y la explotación forestal en la Ciudad Autónoma de Buenos Aires (CABA) y sus alrededores. A lo largo de más de cuatro décadas, Piren S.A. ha evolucionado significativamente, consolidando su presencia en el sector inmobiliario.</p>
+            <p>En los últimos dos años, la compañía experimentó un crecimiento exponencial de sus ingresos, alcanzando un incremento del <strong>400% entre 2023 y 2024</strong>, impulsado principalmente por la expansión de sus servicios inmobiliarios.</p>
+        </div>
     </section>
 
     <section id="actividad" class="section-light">
         <div class="container">
-            <h2>Nuestra Actividad Principal</h2>
-            <p>Piren S.A. se dedica a la prestación de servicios inmobiliarios, que incluyen la comercialización, administración, y desarrollo de bienes raíces urbanos. Nuestro proceso productivo consiste en la identificación de oportunidades de inversión, adquisición, mejora, gestión y venta o alquiler de propiedades.</p>
-            <p>No presentamos estacionalidad significativa en nuestra operación, dado que la actividad está distribuida regularmente durante el año. La estructura de distribución/comercialización se basa en una red propia de agentes inmobiliarios y alianzas estratégicas con desarrolladores y brokers locales. Los aspectos fundamentales del negocio incluyen la valorización de activos, la gestión eficiente de carteras inmobiliarias, y un profundo conocimiento del mercado urbano de CABA.</p>
+            <div class="section-content">
+                <h2>Nuestra Actividad Principal</h2>
+                <p>Piren S.A. se dedica a la prestación de servicios inmobiliarios, que incluyen la comercialización, administración, y desarrollo de bienes raíces urbanos. Nuestro proceso productivo consiste en la identificación de oportunidades de inversión, adquisición, mejora, gestión y venta o alquiler de propiedades.</p>
+                <p>No presentamos estacionalidad significativa en nuestra operación, dado que la actividad está distribuida regularmente durante el año. La estructura de distribución/comercialización se basa en una red propia de agentes inmobiliarios y alianzas estratégicas con desarrolladores y brokers locales. Los aspectos fundamentales del negocio incluyen la valorización de activos, la gestión eficiente de carteras inmobiliarias, y un profundo conocimiento del mercado urbano de CABA.</p>
+            </div>
         </div>
     </section>
 
     <section id="servicios" class="container">
-        <h2>Servicios Diferenciados</h2>
-        <p>Piren S.A. no comercializa productos físicos bajo marcas, sino que ofrece servicios inmobiliarios diferenciados por:</p>
-        <div class="card-container">
-            <div class="card">
-                <h3>Oportunidades de Inversión</h3>
-                <p>Capacidad de identificación de oportunidades de inversión de alto valor.</p>
-            </div>
-            <div class="card">
-                <h3>Gestión Personalizada</h3>
-                <p>Gestión personalizada de bienes raíces y proyectos de desarrollo.</p>
-            </div>
-            <div class="card">
-                <h3>Canales de Distribución</h3>
-                <p>Red propia de agentes, oficinas comerciales en CABA, y presencia en plataformas digitales especializadas.</p>
+        <div class="section-content">
+            <h2>Servicios Diferenciados</h2>
+            <p>Piren S.A. no comercializa productos físicos bajo marcas, sino que ofrece servicios inmobiliarios diferenciados por:</p>
+            <div class="card-container">
+                <div class="card"><h3>Oportunidades de Inversión</h3><p>Capacidad de identificación de oportunidades de inversión de alto valor.</p></div>
+                <div class="card"><h3>Gestión Personalizada</h3><p>Gestión personalizada de bienes raíces y proyectos de desarrollo.</p></div>
+                <div class="card"><h3>Canales de Distribución</h3><p>Red propia de agentes, oficinas comerciales en CABA, y presencia en plataformas digitales especializadas.</p></div>
             </div>
         </div>
     </section>
 
     <section id="mercado" class="section-light">
         <div class="container">
-            <h2>Posicionamiento en el Mercado</h2>
-            <p>El sector inmobiliario en CABA muestra signos de recuperación y dinamismo, impulsado por una demanda creciente de propiedades comerciales y residenciales de alta calidad. La perspectiva para 2025 es de un crecimiento sostenido, siguiendo la tendencia de 2024.</p>
-            <p>Piren S.A. compite con empresas tradicionales del mercado inmobiliario porteño, diferenciándose por su enfoque en servicios integrales y valorización de activos. Aunque no poseemos un market share cuantificado, nuestro acelerado crecimiento (400% en ingresos) indica una participación creciente en un mercado altamente competitivo.</p>
+            <div class="section-content">
+                <h2>Posicionamiento en el Mercado</h2>
+                <p>El sector inmobiliario en CABA muestra signos de recuperación y dinamismo, impulsado por una demanda creciente de propiedades comerciales y residenciales de alta calidad. La perspectiva para 2025 es de un crecimiento sostenido, siguiendo la tendencia de 2024.</p>
+                <p>Piren S.A. compite con empresas tradicionales del mercado inmobiliario porteño, diferenciándose por su enfoque en servicios integrales y valorización de activos. Aunque no poseemos un market share cuantificado, nuestro acelerado crecimiento (400% en ingresos) indica una participación creciente en un mercado altamente competitivo.</p>
+            </div>
         </div>
     </section>
 
     <section id="administracion" class="container">
-        <h2>Nuestra Administración</h2>
-        <p>La administración de Piren S.A. está a cargo de la familia Baez, garantizando un liderazgo profesionalizado y comprometido con la continuidad y el crecimiento sostenido del negocio.</p>
-        <div class="card-container">
-            <div class="card team-member">
-                <h3>Gabriela Baez</h3>
-                <p><strong>Presidenta</strong></p>
-                <p>Asumió formalmente su cargo en febrero de 2025, con mandato vigente por tres años. Cuenta con amplia experiencia en administración y gestión de activos inmobiliarios.</p>
-            </div>
-            <div class="card team-member">
-                <h3>Gabriel Baez</h3>
-                <p><strong>Subdirector</strong></p>
-                <p>Asumió formalmente su cargo en febrero de 2025, con mandato vigente por tres años. Posee experiencia en administración y gestión de activos inmobiliarios.</p>
+        <div class="section-content">
+            <h2>Nuestra Administración</h2>
+            <p>La administración de Piren S.A. está a cargo de la familia Baez, garantizando un liderazgo profesionalizado y comprometido con la continuidad y el crecimiento sostenido del negocio.</p>
+            <div class="card-container">
+                <div class="card team-member"><h3>Gabriela Baez</h3><p><strong>Presidenta</strong></p><p>Asumió formalmente su cargo en febrero de 2025, con mandato vigente por tres años. Cuenta con amplia experiencia en administración y gestión de activos inmobiliarios.</p></div>
+                <div class="card team-member"><h3>Gabriel Baez</h3><p><strong>Subdirector</strong></p><p>Asumió formalmente su cargo en febrero de 2025, con mandato vigente por tres años. Posee experiencia en administración y gestión de activos inmobiliarios.</p></div>
             </div>
         </div>
     </section>
     
     <section id="clientes" class="section-light">
         <div class="container">
-            <h2>Nuestros Clientes</h2>
-            <p>La cartera de clientes de Piren S.A. se compone mayormente de inversores individuales y corporativos del mercado interno. No realizamos exportaciones.</p>
-            <ul>
-                <li>Aproximadamente el <strong>70% de los ingresos</strong> proviene de clientes corporativos interesados en desarrollos inmobiliarios de alta gama.</li>
-                <li>El <strong>30% restante</strong> corresponde a individuos particulares que demandan servicios de compra, venta y alquiler de propiedades.</li>
-            </ul>
-            <p>No aplicamos régimen de retenciones ni reintegros por exportación.</p>
+            <div class="section-content">
+                <h2>Nuestros Clientes</h2>
+                <p>La cartera de clientes de Piren S.A. se compone mayormente de inversores individuales y corporativos del mercado interno. No realizamos exportaciones.</p>
+                <ul>
+                    <li>Aproximadamente el <strong>70% de los ingresos</strong> proviene de clientes corporativos interesados en desarrollos inmobiliarios de alta gama.</li>
+                    <li>El <strong>30% restante</strong> corresponde a individuos particulares que demandan servicios de compra, venta y alquiler de propiedades.</li>
+                </ul>
+                <p>No aplicamos régimen de retenciones ni reintegros por exportación.</p>
+            </div>
         </div>
     </section>
 
-<!--     <section id="activos" class="container">
-        <h2>Activos Fijos Estratégicos</h2>
-        <p>Los principales activos fijos de Piren S.A. son fundamentales para nuestra operación y crecimiento. Todos los inmuebles son propiedad de la empresa y se encuentran estratégicamente ubicados en CABA.</p>
-        <div class="card-container">
-            <div class="card">
-                <h3>Inmuebles Propios</h3>
-                <p>Valuados en <strong>ARS 156,2 millones</strong>.</p>
-            </div>
-            <div class="card">
-                <h3>Mejoras en Inmuebles</h3>
-                <p>Alcanzando <strong>ARS 101,9 millones</strong>.</p>
-            </div>
-            <div class="card">
-                <h3>Mobiliario y Equipamiento</h3>
-                <p>Muebles y útiles: <strong>ARS 33,5 millones</strong>.<br>Bienes de informática: <strong>ARS 13 millones</strong>.</p>
-            </div>
-        </div>
-        <p style="text-align: center; margin-top: 30px; font-style: italic;">Mantenemos una política activa de inversión en activos fijos, reinvirtiendo parte de nuestras utilidades en mejoras y adquisición de nuevos bienes que potencien nuestra actividad principal.</p>
-    </section> -->
+    <!-- Sección de Activos Oculta
+    <section id="activos" class="container">
+        ...
+    </section>
+    -->
     
-    <section id="contacto" class="section-light">
-        <div class="container">
+    <section id="contacto" class="container"> <!-- Cambiado a fondo normal para mejor legibilidad del formulario -->
+        <div class="section-content">
             <h2>Contacto</h2>
             <p style="text-align:center; margin-bottom:30px;">Si desea conocer más sobre nuestras oportunidades de inversión, servicios o trayectoria, no dude en contactarnos.</p>
             
@@ -396,27 +500,18 @@
                 <div style="flex: 1; min-width: 280px; max-width: 500px;">
                     <h3 style="color: var(--primary-color); margin-bottom: 15px;">Información de Contacto</h3>
                     <div class="contact-details">
-                        <p><strong>Dirección:</strong> Av. Principal 1234, CABA, Argentina </p>
-                        <p><strong>Teléfono:</strong> +54 (11) 4484 4429 </p>
-                        <p><strong>Email:</strong> pirensa@movil.cloud </p>
+                        <p><strong>Dirección:</strong> Arenales 2902 1° A, CABA, Argentina</p>
+                        <p><strong>Teléfono:</strong> +54 9 11 4484 4429</p>
+                        <p><strong>Email:</strong> <a href="mailto:pirensa@movil.cloud" style="color:var(--secondary-color);">pirensa@movil.cloud</a></p>
                         <p>Nuestra red de agentes y oficinas comerciales en CABA están a su disposición.</p>
                     </div>
                 </div>
                 <div style="flex: 1; min-width: 280px; max-width: 500px;">
                     <h3 style="color: var(--primary-color); margin-bottom: 15px;">Envíenos su Consulta</h3>
-                    <form style="padding:20px; background-color:var(--white); border-radius:var(--border-radius); box-shadow:var(--box-shadow);">
-                        <div style="margin-bottom:15px;">
-                            <label for="name" style="display:block; margin-bottom:5px; font-weight:500;">Nombre:</label>
-                            <input type="text" id="name" name="name" required style="width:calc(100% - 22px); padding:10px; border:1px solid #ccc; border-radius:4px;">
-                        </div>
-                        <div style="margin-bottom:15px;">
-                            <label for="email" style="display:block; margin-bottom:5px; font-weight:500;">Email:</label>
-                            <input type="email" id="email" name="email" required style="width:calc(100% - 22px); padding:10px; border:1px solid #ccc; border-radius:4px;">
-                        </div>
-                        <div style="margin-bottom:15px;">
-                            <label for="message" style="display:block; margin-bottom:5px; font-weight:500;">Mensaje:</label>
-                            <textarea id="message" name="message" rows="4" required style="width:calc(100% - 22px); padding:10px; border:1px solid #ccc; border-radius:4px;"></textarea>
-                        </div>
+                    <form style="padding:20px; background-color:var(--light-bg); border-radius:var(--border-radius); box-shadow:var(--box-shadow);">
+                        <div style="margin-bottom:15px;"><label for="name" style="display:block; margin-bottom:5px; font-weight:500;">Nombre:</label><input type="text" id="name" name="name" required style="width:calc(100% - 22px); padding:10px; border:1px solid #ccc; border-radius:4px;"></div>
+                        <div style="margin-bottom:15px;"><label for="email" style="display:block; margin-bottom:5px; font-weight:500;">Email:</label><input type="email" id="email" name="email" required style="width:calc(100% - 22px); padding:10px; border:1px solid #ccc; border-radius:4px;"></div>
+                        <div style="margin-bottom:15px;"><label for="message" style="display:block; margin-bottom:5px; font-weight:500;">Mensaje:</label><textarea id="message" name="message" rows="4" required style="width:calc(100% - 22px); padding:10px; border:1px solid #ccc; border-radius:4px;"></textarea></div>
                         <button type="submit" class="cta-button" style="border:none; cursor:pointer; display:block; width:100%;">Enviar Consulta</button>
                     </form>
                 </div>
@@ -434,57 +529,94 @@
     <script>
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // Simple scrollspy for nav
-        const sections = document.querySelectorAll("section[id]");
-        const navLinks = document.querySelectorAll("nav ul li a"); // Changed variable name for clarity
+        const pageHeader = document.getElementById('pageHeader');
+        const mainNav = document.getElementById('mainNav');
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        const navLinks = navMenu.querySelectorAll('a');
 
-        // Calculate header and nav height for offset
-        const headerHeight = document.querySelector('header').offsetHeight;
-        const navHeight = document.querySelector('nav').offsetHeight;
-        const scrollOffset = headerHeight + navHeight + 20; // Added a 20px buffer
+        // Función para ajustar el 'top' de la navegación sticky
+        function adjustNavTop() {
+            if (pageHeader && mainNav) {
+                const headerHeight = pageHeader.offsetHeight;
+                mainNav.style.top = headerHeight + 'px';
+                document.documentElement.style.setProperty('--header-height-approx', headerHeight + 'px'); // Actualiza variable CSS
+            }
+        }
 
-        window.addEventListener("scroll", () => {
-            let current = "";
-            sections.forEach((section) => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - scrollOffset) {
-                    current = section.getAttribute("id");
-                }
-            });
+        // Menú Hamburguesa
+        menuToggle.addEventListener('click', () => {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+            navMenu.classList.toggle('active');
+        });
 
-            navLinks.forEach((link) => { // Changed variable name
-                link.classList.remove("active");
-                if (link.getAttribute("href").substring(1) === current) { // Compare without '#'
-                    link.classList.add("active");
+        // Cerrar menú al hacer clic en un enlace (para SPA behavior)
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
                 }
             });
         });
+        
+        // Scrollspy
+        const sections = document.querySelectorAll("section[id]");
+        function updateActiveNavLink() {
+            let currentSectionId = "";
+            const scrollOffset = pageHeader.offsetHeight + mainNav.offsetHeight + 20;
 
-        // Adjust sticky nav top position dynamically (optional, but good for robustness)
-        // This helps if the header content changes height significantly due to dynamic content or font loading.
-        // For this static page, the CSS fixed value is likely fine.
-        function adjustNavTop() {
-            const headerElem = document.querySelector('header');
-            const navElem = document.querySelector('nav');
-            if (headerElem && navElem) {
-                 // Get actual computed height
-                const computedHeaderHeight = parseFloat(window.getComputedStyle(headerElem).height); 
-                // Get top and bottom padding of header
-                const headerPaddingTop = parseFloat(window.getComputedStyle(headerElem).paddingTop);
-                const headerPaddingBottom = parseFloat(window.getComputedStyle(headerElem).paddingBottom);
-                const totalHeaderHeight = computedHeaderHeight + headerPaddingTop + headerPaddingBottom;
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - scrollOffset) {
+                    currentSectionId = section.getAttribute("id");
+                }
+            });
 
-                navElem.style.top = totalHeaderHeight + 'px';
-            }
+            navLinks.forEach((link) => {
+                link.classList.remove("active");
+                // Compara el href (ej. "#historia") con el id de la sección actual
+                if (link.getAttribute("href").substring(1) === currentSectionId) {
+                    link.classList.add("active");
+                }
+            });
         }
         
-        // Call on load and resize
-        window.addEventListener('load', adjustNavTop);
+        // Para animación de #mercado con Intersection Observer (opcional, más avanzado)
+        const mercadoSection = document.getElementById('mercado');
+        if (mercadoSection) {
+            const observerOptions = {
+                root: null, // viewport
+                rootMargin: '0px',
+                threshold: 0.1 // 10% de la sección visible
+            };
+
+            const observerCallback = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-section');
+                        // observer.unobserve(entry.target); // Descomentar si solo quieres que la animación se ejecute una vez
+                    } else {
+                         // entry.target.classList.remove('animate-section'); // Descomentar para repetir al scrollear de nuevo
+                    }
+                });
+            };
+            const mercadoObserver = new IntersectionObserver(observerCallback, observerOptions);
+            mercadoObserver.observe(mercadoSection);
+        }
+
+
+        // Event listeners
+        window.addEventListener('load', () => {
+            adjustNavTop();
+            updateActiveNavLink(); // Llama al scrollspy al cargar
+        });
         window.addEventListener('resize', adjustNavTop);
+        window.addEventListener('scroll', updateActiveNavLink);
 
-        // Initial call in case load event already fired
+        // Llamada inicial por si acaso
         adjustNavTop();
-
 
     </script>
 
