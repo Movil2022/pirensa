@@ -3,622 +3,729 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIREN S.A. - Desarrollo Inmobiliario y Gestión Forestal</title>
+    <title>PIREN S.A. - Innovación Inmobiliaria</title>
+    <!-- AOS Library for Scroll Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2c3e50; /* Azul oscuro/grisáceo */
-            --secondary-color: #3498db; /* Azul brillante */
-            --accent-color: #e67e22; /* Naranja para acentos */
-            --text-color: #333;
-            --light-bg: #f8f9fa;
-            --white: #ffffff;
+            --primary-font: 'Poppins', 'Inter', 'Montserrat', sans-serif;
+            --bg-dark: #1a1a1a; /* Negro/Gris muy oscuro */
+            --bg-light: #f8f9fa;
+            --text-light: #e0e0e0;
+            --text-dark: #333333;
+            --accent-gold: #b08d57; /* Dorado sofisticado */
+            --accent-blue-metallic: #4a69bd; /* Azul metálico (elegir uno o alternar) */
+            --primary-accent: var(--accent-gold); /* Definir el acento principal */
+            --section-padding: 60px 20px;
             --border-radius: 8px;
-            --box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            --header-height-approx: 104px; /* Aproximación para cálculos iniciales */
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* Reset y Base */
+        * {
             margin: 0;
             padding: 0;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--white);
-            scroll-behavior: smooth;
+            box-sizing: border-box;
         }
-
+        html {
+            scroll-behavior: smooth;
+             /* For full-screen scroll effect, JavaScript might be needed for snapping */
+        }
+        body {
+            font-family: var(--primary-font);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.7;
+            overflow-x: hidden; /* Evitar scroll horizontal */
+        }
         .container {
             width: 90%;
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px 0;
+            padding: 0 15px;
         }
-
-        /* Header con animación de brillo */
-        header {
-            background-color: var(--primary-color);
-            color: var(--white);
-            padding: 1.5rem 0;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            overflow: hidden; /* Para la animación de brillo */
-        }
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%; /* Inicia fuera de la vista */
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-            animation: headerShine 5s infinite linear;
-            z-index: 1;
-        }
-        @keyframes headerShine {
-            0% { left: -75%; }
-            100% { left: 125%; }
-        }
-        header .container {
-            position: relative; /* Para que el contenido esté sobre el brillo */
-            z-index: 2;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
+        h1, h2, h3 {
             font-weight: 600;
+            line-height: 1.3;
         }
-        header p {
-            margin: 5px 0 0;
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
+        h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+        h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 30px; color: var(--primary-accent);}
+        p { margin-bottom: 1rem; font-size: clamp(0.9rem, 1.5vw, 1.1rem); }
+        a { text-decoration: none; color: var(--primary-accent); transition: color 0.3s ease; }
+        a:hover { color: var(--text-light); }
 
-        /* Navigation - Preparada para ser colapsable */
-        nav {
-            background-color: var(--secondary-color);
-            padding: 0.5rem 0; /* Reducido padding para móvil */
-            text-align: center;
-            position: sticky;
-            top: var(--header-height-approx); /* Se ajustará con JS */
-            z-index: 999;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        /* Full Screen Sections Wrapper */
+        .fullscreen-wrapper {
+            /* JavaScript might control snapping or full-page scroll */
         }
-        .nav-container {
+        
+        /* Individual Full Screen Section Styling */
+        .fs-section {
+            min-height: 100vh; /* Full viewport height */
             display: flex;
-            justify-content: space-between; /* Para el logo/título y el botón hamburguesa */
+            flex-direction: column;
             align-items: center;
-            width: 90%;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        .nav-brand { /* Opcional, si quieres un logo/nombre aquí */
-            color: var(--white);
-            text-decoration: none;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex; /* Por defecto para desktop */
-            flex-direction: row;
-        }
-        nav ul li {
-            margin: 0 15px;
-        }
-        nav ul li a {
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 8px 12px; /* Aumentado padding para mejor clic */
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-            display: block;
-        }
-        nav ul li a:hover, nav ul li a.active {
-            background-color: rgba(255,255,255,0.2);
-        }
-
-        /* Hamburger Menu Button */
-        .menu-toggle {
-            display: none; /* Oculto por defecto, visible en móviles */
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 1.8rem;
-            cursor: pointer;
-            padding: 5px 10px;
-        }
-
-        /* Sections */
-        section {
-            padding: 60px 20px;
-            border-bottom: 1px solid #e0e0e0;
-            position: relative; /* Para animaciones de fondo */
-            overflow: hidden; /* Para que las animaciones no se desborden feo */
-        }
-        section:last-of-type {
-            border-bottom: none;
-        }
-        section h2 {
+            justify-content: center;
+            padding: var(--section-padding);
+            position: relative;
+            overflow: hidden; /* Para parallax o elementos que se mueven */
             text-align: center;
-            color: var(--primary-color);
-            font-size: 2rem;
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 2; /* Encima de animaciones de fondo */
         }
-        section h2::after {
+        .fs-section:nth-child(odd) { /* Alternar colores de fondo si se desea */
+             /* background-color: var(--bg-dark); */
+        }
+        .fs-section:nth-child(even) {
+            background-color: #222222; /* Un gris ligeramente más claro para contraste */
+            color: var(--text-light);
+        }
+        .fs-section#hero { background-color: var(--bg-dark); } /* Hero siempre oscuro */
+
+
+        /* Header / Navigation (puede ser fija o cambiar por sección) */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .main-header.scrolled {
+            background-color: rgba(26, 26, 26, 0.9); /* Fondo oscuro semitransparente al hacer scroll */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+        .logo span { color: var(--primary-accent); }
+
+        .main-nav ul {
+            list-style: none;
+            display: flex;
+        }
+        .main-nav ul li {
+            margin-left: 25px;
+        }
+        .main-nav ul li a {
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 5px 0;
+            position: relative;
+        }
+        .main-nav ul li a::after {
             content: '';
-            display: block;
-            width: 60px;
-            height: 3px;
-            background-color: var(--secondary-color);
-            margin: 10px auto 0;
-        }
-        .section-content { /* Contenedor para el texto de la sección */
-            position: relative;
-            z-index: 2;
-        }
-
-        .section-light {
-            background-color: var(--light-bg);
-        }
-
-        /* Animación de fondo para "Actividad Principal" - Líneas moviéndose */
-        #actividad::before {
-            content: "";
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image:
-                linear-gradient(45deg, rgba(0,0,0,0.03) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.03) 75%),
-                linear-gradient(45deg, rgba(0,0,0,0.03) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.03) 75%);
-            background-size: 60px 60px;
-            background-position: 0 0, 30px 30px;
-            animation: 도시배경 10s linear infinite;
-            opacity: 0.5;
-            z-index: 1;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-accent);
+            transition: width 0.3s ease;
         }
-        @keyframes 도시배경 { /* urbanBackground en coreano para evitar colisiones */
-            0% { background-position: 0 0, 30px 30px; }
-            100% { background-position: 60px 60px, 90px 90px; }
+        .main-nav ul li a:hover::after, .main-nav ul li a.active::after {
+            width: 100%;
         }
-
-        /* Animación de fondo para "Posicionamiento en el Mercado" - Gráfico subiendo */
-        #mercado::before {
-            content: "";
-            position: absolute;
-            bottom: 0; left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 400px;
-            height: 0%; /* Inicia con altura 0 */
-            background: linear-gradient(to top, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.05));
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            animation: 성장그래프 3s ease-out forwards; /* growthChart en coreano */
-            /* La animación se ejecutará una vez al cargar la página o al scrollear a ella (si se implementa con Intersection Observer) */
-            /* Para que sea un bucle suave, sería más complejo */
-            z-index: 1;
-            opacity: 0.7;
-        }
-        @keyframes 성장그래프 {
-            0% { height: 0%; opacity: 0; }
-            100% { height: 50%; opacity: 0.7; } /* Crece hasta la mitad de la sección */
-        }
-         /* Para reiniciar la animación de mercado al scrollear a la sección (opcional) */
-        #mercado.animate-section::before {
-            animation: 성장그래프 3s ease-out forwards;
-        }
-
-
-        /* Animación de fondo para "Nuestros Clientes" - Ondas suaves */
-        #clientes::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background:
-                linear-gradient(315deg, rgba(230, 126, 34, 0.05) 25%, transparent 25%) -50px 0,
-                linear-gradient(45deg, rgba(230, 126, 34, 0.05) 25%, transparent 25%) -50px 0,
-                linear-gradient(315deg, rgba(52, 152, 219, 0.07) 50%, transparent 50%) 0px 0,
-                linear-gradient(45deg, rgba(52, 152, 219, 0.07) 50%, transparent 50%) 0px 0;
-            background-size: 100px 100px;
-            animation: 고객물결 8s linear infinite; /* customerWaves en coreano */
-            opacity: 0.6;
-            z-index: 1;
-        }
-        @keyframes 고객물결 {
-            0% { background-position: -100px 0, -100px 0, 0px 0, 0px 0; }
-            100% { background-position: 0px 0, 0px 0, 100px 0, 100px 0; }
+        
+        /* Mobile Navigation */
+        .menu-toggle {
+            display: none; /* Oculto por defecto */
+            background: none; border: none;
+            color: var(--text-light);
+            font-size: 2rem; cursor: pointer;
         }
 
 
         /* Hero Section */
-        .hero {
-            background: linear-gradient(rgba(44, 62, 80, 0.7), rgba(44, 62, 80, 0.7)), url('https://images.unsplash.com/photo-1503428593586-e225b39bddfe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
-            color: var(--white);
-            text-align: center;
-            padding: 100px 20px;
-            min-height: 350px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        #hero {
+            color: var(--text-light);
+            position: relative; /* Para el video de fondo */
         }
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        #heroVideo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            transform: translateX(-50%) translateY(-50%);
+            object-fit: cover; /* Cubre todo el espacio sin distorsionar */
         }
-        .hero p {
-            font-size: 1.3rem;
-            max-width: 700px;
-            margin-bottom: 25px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        #hero .overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); /* Overlay oscuro para legibilidad */
+            z-index: 0;
+        }
+        #hero .content {
+            position: relative; /* Sobre el overlay */
+            z-index: 1;
+            max-width: 800px;
+        }
+        #hero h1 {
+            font-size: clamp(3rem, 7vw, 5.5rem); /* Más grande para el hero */
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        #hero .slogan {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            margin-bottom: 30px;
+            font-weight: 300;
+            opacity: 0.9;
         }
         .cta-button {
-            background-color: var(--accent-color);
-            color: var(--white);
-            padding: 12px 25px;
-            text-decoration: none;
-            font-size: 1.1rem;
-            border-radius: var(--border-radius);
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: var(--box-shadow);
+            display: inline-block;
+            background-color: var(--primary-accent);
+            color: var(--bg-dark);
+            padding: 15px 35px;
+            font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+            font-weight: 600;
+            border-radius: 50px; /* Botón redondeado */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         .cta-button:hover {
-            background-color: #d35400;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            background-color: #c8a16a; /* Dorado más claro al hover */
+        }
+        .cta-secondary {
+            background: transparent;
+            border: 2px solid var(--primary-accent);
+            color: var(--primary-accent);
+            margin-left: 15px;
+        }
+        .cta-secondary:hover {
+            background-color: var(--primary-accent);
+            color: var(--bg-dark);
         }
 
-        /* Cards */
-        .card-container {
+        /* Presentación Institucional */
+        #presentacion .content-split {
             display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            text-align: left;
         }
-        .card {
-            background-color: var(--white);
+        #presentacion .text-content { flex: 1; }
+        #presentacion .image-content {
+            flex: 1;
+            max-width: 500px; /* Limitar tamaño de imagen */
             border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        #presentacion .image-content img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* Proyectos Destacados - Cards con efecto Tilt */
+        #proyectos { background-color: var(--bg-dark); } /* Sección oscura para resaltar cards */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .project-card {
+            background-color: #2a2a2a; /* Color base de la card */
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            text-align: left;
+            /* Estilos para Vanilla Tilt (se aplicarán con JS) */
+            transform-style: preserve-3d; 
+        }
+        /* .project-card:hover { transform: translateY(-10px); } No necesario con Tilt */
+        .project-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(30%);
+            transition: filter 0.3s ease;
+        }
+        .project-card:hover img { filter: grayscale(0%); }
+        .project-card-content {
             padding: 25px;
-            flex: 1 1 300px;
-            max-width: 400px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        .project-card h3 {
+            color: var(--primary-accent);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
-        .card h3 {
-            color: var(--secondary-color);
-            margin-top: 0;
-            font-size: 1.4rem;
+        .project-card p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            opacity: 0.8;
+            margin-bottom: 15px;
         }
-        .card ul { list-style: none; padding-left: 0; }
-        .card ul li { padding-left: 20px; position: relative; margin-bottom: 8px; }
-        .card ul li::before { content: '✓'; color: var(--accent-color); position: absolute; left: 0; font-weight: bold; }
-
-        #administracion .team-member { text-align: center; margin-bottom: 20px; }
-        #administracion .team-member strong { display: block; font-size: 1.1rem; color: var(--primary-color); }
-
-        /* Contact Info */
-        .contact-details p { margin-bottom: 10px; font-size: 1rem; }
-        .contact-details strong { color: var(--primary-color); }
-
-        /* Footer */
-        footer {
-            background-color: var(--primary-color);
-            color: var(--white);
-            text-align: center;
-            padding: 25px 0;
+        .project-card .details-link {
+            font-weight: 600;
             font-size: 0.9rem;
         }
-        footer p { margin: 0; }
 
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            header h1 { font-size: 2rem; }
-            header p { font-size: 1rem; }
-
-            .menu-toggle { display: block; }
-            nav {
-                /* top: se ajusta con JS */
-                padding: 0.5rem 0;
-            }
-            .nav-container {
-                flex-wrap: wrap; /* Permite que el ul pase abajo si es necesario */
-                 justify-content: flex-end; /* Botón a la derecha */
-            }
-            nav ul {
-                display: none; /* Oculto por defecto en móvil */
-                flex-direction: column;
-                width: 100%;
-                background-color: var(--secondary-color); /* Fondo para el menú desplegado */
-                position: absolute; /* Para que no empuje el contenido de la nav-bar */
-                top: 100%; /* Debajo de la barra de navegación */
-                left: 0;
-                box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-                padding: 10px 0;
-            }
-            nav ul.active {
-                display: flex; /* Mostrar cuando está activo */
-            }
-            nav ul li {
-                margin: 0;
-                width: 100%;
-                text-align: center;
-            }
-            nav ul li a {
-                padding: 12px 15px;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-            }
-            nav ul li:last-child a {
-                border-bottom: none;
-            }
-            
-            .hero h1 { font-size: 2.2rem; }
-            .hero p { font-size: 1.1rem; }
-            section { padding: 40px 15px; }
-            section h2 { font-size: 1.8rem; }
-
-            .card-container { flex-direction: column; align-items: center; }
-            .card { width: 90%; max-width: none; }
-
-            #contacto .container > div { /* Para las dos columnas de contacto */
-                flex-direction: column;
-            }
-            #contacto .container > div > div { /* Cada item (info y form) */
-                 max-width: 100%;
-                 margin-bottom: 30px;
-            }
-             #mercado::before { /* Ajustar animación para móviles */
-                width: 95%;
-            }
+        /* Valores / Filosofía */
+        #valores .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
         }
+        .value-item {
+            background-color: rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+        .value-item .icon svg { /* Estilo para iconos SVG */
+            width: 50px;
+            height: 50px;
+            fill: var(--primary-accent);
+            margin-bottom: 20px;
+        }
+        .value-item h3 {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        /* Contacto */
+        #contacto { background-color: var(--bg-dark); }
+        .contact-wrapper {
+            display: flex;
+            gap: 40px;
+            background-color: #222222;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        .contact-info, .contact-form-container {
+            flex: 1;
+            text-align: left;
+        }
+        .contact-info h3 { color: var(--primary-accent); margin-bottom: 15px; }
+        .contact-info p { margin-bottom: 20px; }
+        .contact-info .info-item { display: flex; align-items: center; margin-bottom: 15px; }
+        .contact-info .info-item svg {
+            width: 24px; height: 24px;
+            fill: var(--primary-accent);
+            margin-right: 15px;
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: var(--text-light);
+            font-family: var(--primary-font);
+            font-size: 1rem;
+        }
+        .contact-form input::placeholder, .contact-form textarea::placeholder {
+            color: #888;
+        }
+        .contact-form button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-accent);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .contact-form button:hover { background-color: #c8a16a; }
+        .map-container {
+            margin-top: 30px;
+            height: 300px;
+            background-color: #333; /* Placeholder para el mapa */
+            border-radius: var(--border-radius);
+            display:flex; align-items:center; justify-content:center;
+        }
+
+
+        /* Footer Sencillo */
+        .main-footer {
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            background-color: #111; /* Un negro más profundo para el footer */
+            color: #aaa;
+        }
+        .main-footer a { color: var(--primary-accent); }
+
+
+        /* Responsive - Mobile First Approach */
+        @media (max-width: 768px) {
+            .main-nav {
+                position: fixed;
+                top: 0; right: -100%; /* Oculto fuera de pantalla */
+                width: 70%;
+                height: 100vh;
+                background-color: rgba(34, 34, 34, 0.98); /* Fondo del menú móvil */
+                backdrop-filter: blur(5px);
+                flex-direction: column;
+                padding-top: 80px; /* Espacio para el botón de cerrar */
+                transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1); /* Animación suave */
+                z-index: 999;
+            }
+            .main-nav.active {
+                right: 0; /* Mostrar menú */
+            }
+            .main-nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            .main-nav ul li {
+                margin: 15px 0;
+            }
+            .main-nav ul li a {
+                font-size: 1.2rem;
+            }
+            .menu-toggle {
+                display: block;
+                z-index: 1001; /* Encima del menú */
+                position: relative; /* Para que no se mueva con el scroll del header */
+            }
+            .menu-toggle.active .line1 { transform: rotate(-45deg) translate(-5px, 6px); }
+            .menu-toggle.active .line2 { opacity: 0; }
+            .menu-toggle.active .line3 { transform: rotate(45deg) translate(-5px, -6px); }
+            .menu-toggle div { /* Líneas del hamburguer */
+                width: 25px; height: 3px; background-color: var(--text-light);
+                margin: 5px 0; transition: all 0.3s ease-in-out;
+            }
+
+
+            .fs-section {
+                padding: 40px 15px; /* Menos padding en móvil */
+                min-height: auto; /* Permitir que el contenido defina altura si es necesario */
+                /* Para mantener el efecto full-screen, se puede usar min-height: calc(var(--vh, 1vh) * 100); con JS */
+            }
+            .fs-section:not(#hero) { min-height: auto; padding-bottom: 60px; padding-top: 80px; /* Espacio para nav fija */ }
+             #hero { min-height: 100vh; }
+
+
+            #presentacion .content-split { flex-direction: column; }
+            #presentacion .image-content { margin-top: 30px; max-width: 100%; }
+            
+            .contact-wrapper { flex-direction: column; padding: 25px; }
+            .map-container { height: 250px; }
+        }
+        
+        /* Para asegurar que el 100vh funcione bien en móviles con barras de navegador */
+        /* Se establece con JavaScript */
+        :root { --vh: 1vh; }
+
+
     </style>
 </head>
 <body>
+    <div class="fullscreen-wrapper">
 
-    <header id="pageHeader">
-        <div class="container">
-            <h1>PIREN S.A.</h1>
-            <p>Liderazgo en Desarrollo Inmobiliario y Gestión Forestal Estratégica</p>
-        </div>
-    </header>
-
-    <nav id="mainNav">
-        <div class="nav-container">
-            <!-- <a href="#home" class="nav-brand">PIREN S.A.</a> Logo/nombre opcional aquí -->
-            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú de navegación" aria-expanded="false">
-                &#9776; <!-- Símbolo de hamburguesa -->
-            </button>
-            <ul id="navMenu">
-                <li><a href="#historia">Historia</a></li>
-                <li><a href="#actividad">Actividad</a></li>
-                <li><a href="#servicios">Servicios</a></li>
-                <li><a href="#mercado">Mercado</a></li>
-                <li><a href="#administracion">Administración</a></li>
-                <!-- <li><a href="#activos">Activos</a></li> La sección de activos está oculta -->
-                <li><a href="#clientes">Clientes</a></li>
-                <li><a href="#contacto">Contacto</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <section class="hero" id="home">
-        <h1>Transformando el Paisaje Urbano y Rural</h1>
-        <p>Más de cuatro décadas de experiencia en desarrollo inmobiliario y gestión forestal, impulsando el crecimiento y la valorización en CABA y sus alrededores.</p>
-        <a href="#contacto" class="cta-button">Conózcanos Más</a>
-    </section>
-
-    <section id="historia" class="container">
-        <div class="section-content">
-            <h2>Nuestra Trayectoria</h2>
-            <p>Piren S.A. fue constituida el 23 de noviembre de 1978. Desde sus inicios, la empresa se enfocó en el desarrollo inmobiliario y la explotación forestal en la Ciudad Autónoma de Buenos Aires (CABA) y sus alrededores. A lo largo de más de cuatro décadas, Piren S.A. ha evolucionado significativamente, consolidando su presencia en el sector inmobiliario.</p>
-            <p>En los últimos dos años, la compañía experimentó un crecimiento exponencial de sus ingresos, alcanzando un incremento del <strong>400% entre 2023 y 2024</strong>, impulsado principalmente por la expansión de sus servicios inmobiliarios.</p>
-        </div>
-    </section>
-
-    <section id="actividad" class="section-light">
-        <div class="container">
-            <div class="section-content">
-                <h2>Nuestra Actividad Principal</h2>
-                <p>Piren S.A. se dedica a la prestación de servicios inmobiliarios, que incluyen la comercialización, administración, y desarrollo de bienes raíces urbanos. Nuestro proceso productivo consiste en la identificación de oportunidades de inversión, adquisición, mejora, gestión y venta o alquiler de propiedades.</p>
-                <p>No presentamos estacionalidad significativa en nuestra operación, dado que la actividad está distribuida regularmente durante el año. La estructura de distribución/comercialización se basa en una red propia de agentes inmobiliarios y alianzas estratégicas con desarrolladores y brokers locales. Los aspectos fundamentales del negocio incluyen la valorización de activos, la gestión eficiente de carteras inmobiliarias, y un profundo conocimiento del mercado urbano de CABA.</p>
+        <header class="main-header" id="mainHeader">
+            <div class="container">
+                <a href="#hero" class="logo">PIREN<span>SA</span></a>
+                <nav class="main-nav" id="mainNav">
+                    <ul>
+                        <li><a href="#hero" class="active">Inicio</a></li>
+                        <li><a href="#presentacion">Nosotros</a></li>
+                        <li><a href="#proyectos">Proyectos</a></li>
+                        <li><a href="#valores">Filosofía</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </nav>
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+                    <div class="line1"></div>
+                    <div class="line2"></div>
+                    <div class="line3"></div>
+                </button>
             </div>
-        </div>
-    </section>
+        </header>
 
-    <section id="servicios" class="container">
-        <div class="section-content">
-            <h2>Servicios Diferenciados</h2>
-            <p>Piren S.A. no comercializa productos físicos bajo marcas, sino que ofrece servicios inmobiliarios diferenciados por:</p>
-            <div class="card-container">
-                <div class="card"><h3>Oportunidades de Inversión</h3><p>Capacidad de identificación de oportunidades de inversión de alto valor.</p></div>
-                <div class="card"><h3>Gestión Personalizada</h3><p>Gestión personalizada de bienes raíces y proyectos de desarrollo.</p></div>
-                <div class="card"><h3>Canales de Distribución</h3><p>Red propia de agentes, oficinas comerciales en CABA, y presencia en plataformas digitales especializadas.</p></div>
+        <!-- HERO SECTION -->
+        <section id="hero" class="fs-section" data-aos="fade-in" data-aos-duration="1000">
+            <video autoplay muted loop playsinline id="heroVideo">
+                <!-- REEMPLAZA ESTE VIDEO con uno tuyo. Formatos recomendados: MP4 (H.264), WebM -->
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-city-on-a-sunny-day-4778-large.mp4" type="video/mp4">
+                Tu navegador no soporta videos HTML5.
+            </video>
+            <div class="overlay"></div>
+            <div class="content container">
+                <h1 data-aos="fade-up" data-aos-delay="200">PIREN S.A.</h1>
+                <p class="slogan" data-aos="fade-up" data-aos-delay="400">Innovación Inmobiliaria que Transforma el Futuro.</p>
+                <div data-aos="fade-up" data-aos-delay="600">
+                    <a href="#proyectos" class="cta-button">Ver Proyectos</a>
+                    <a href="#contacto" class="cta-button cta-secondary">Contactar</a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="mercado" class="section-light">
-        <div class="container">
-            <div class="section-content">
-                <h2>Posicionamiento en el Mercado</h2>
-                <p>El sector inmobiliario en CABA muestra signos de recuperación y dinamismo, impulsado por una demanda creciente de propiedades comerciales y residenciales de alta calidad. La perspectiva para 2025 es de un crecimiento sostenido, siguiendo la tendencia de 2024.</p>
-                <p>Piren S.A. compite con empresas tradicionales del mercado inmobiliario porteño, diferenciándose por su enfoque en servicios integrales y valorización de activos. Aunque no poseemos un market share cuantificado, nuestro acelerado crecimiento (400% en ingresos) indica una participación creciente en un mercado altamente competitivo.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="administracion" class="container">
-        <div class="section-content">
-            <h2>Nuestra Administración</h2>
-            <p>La administración de Piren S.A. está a cargo de la familia Baez, garantizando un liderazgo profesionalizado y comprometido con la continuidad y el crecimiento sostenido del negocio.</p>
-            <div class="card-container">
-                <div class="card team-member"><h3>Gabriela Baez</h3><p><strong>Presidenta</strong></p><p>Asumió formalmente su cargo en febrero de 2025, con mandato vigente por tres años. Cuenta con amplia experiencia en administración y gestión de activos inmobiliarios.</p></div>
-                <div class="card team-member"><h3>Gabriel Baez</h3><p><strong>Subdirector</strong></p><p>Asumió formalmente su cargo en febrero de 2025, con mandato vigente por tres años. Posee experiencia en administración y gestión de activos inmobiliarios.</p></div>
-            </div>
-        </div>
-    </section>
-    
-    <section id="clientes" class="section-light">
-        <div class="container">
-            <div class="section-content">
-                <h2>Nuestros Clientes</h2>
-                <p>La cartera de clientes de Piren S.A. se compone mayormente de inversores individuales y corporativos del mercado interno. No realizamos exportaciones.</p>
-                <ul>
-                    <li>Aproximadamente el <strong>70% de los ingresos</strong> proviene de clientes corporativos interesados en desarrollos inmobiliarios de alta gama.</li>
-                    <li>El <strong>30% restante</strong> corresponde a individuos particulares que demandan servicios de compra, venta y alquiler de propiedades.</li>
-                </ul>
-                <p>No aplicamos régimen de retenciones ni reintegros por exportación.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección de Activos Oculta
-    <section id="activos" class="container">
-        ...
-    </section>
-    -->
-    
-    <section id="contacto" class="container"> <!-- Cambiado a fondo normal para mejor legibilidad del formulario -->
-        <div class="section-content">
-            <h2>Contacto</h2>
-            <p style="text-align:center; margin-bottom:30px;">Si desea conocer más sobre nuestras oportunidades de inversión, servicios o trayectoria, no dude en contactarnos.</p>
-            
-            <div style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: space-around;">
-                <div style="flex: 1; min-width: 280px; max-width: 500px;">
-                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">Información de Contacto</h3>
-                    <div class="contact-details">
-                        <p><strong>Dirección:</strong> Arenales 2902 1° A, CABA, Argentina</p>
-                        <p><strong>Teléfono:</strong> +54 9 11 4484 4429</p>
-                        <p><strong>Email:</strong> <a href="mailto:pirensa@movil.cloud" style="color:var(--secondary-color);">pirensa@movil.cloud</a></p>
-                        <p>Nuestra red de agentes y oficinas comerciales en CABA están a su disposición.</p>
+        <!-- PRESENTACIÓN INSTITUCIONAL -->
+        <section id="presentacion" class="fs-section">
+            <div class="container" data-aos="fade-up">
+                <h2>Construyendo Legados, Creando Futuro</h2>
+                <div class="content-split">
+                    <div class="text-content">
+                        <p>Desde 1978, Piren S.A. se ha dedicado a redefinir el panorama inmobiliario y forestal. Con una trayectoria de más de cuatro décadas, hemos consolidado una reputación de excelencia, innovación y compromiso con la calidad.</p>
+                        <p>Nuestro enfoque se centra en identificar oportunidades únicas, desarrollar proyectos de alto valor y gestionar activos con una visión estratégica a largo plazo. Creemos en la creación de espacios que no solo cumplen con las más altas exigencias funcionales y estéticas, sino que también contribuyen positivamente a su entorno y a la comunidad.</p>
+                         <a href="#contacto" class="cta-button" style="margin-top:20px; background-color: var(--accent-blue-metallic); color:white;">Conoce más sobre nosotros</a>
+                    </div>
+                    <div class="image-content" data-aos="fade-left" data-aos-delay="200">
+                        <!-- Reemplazar con imagen relevante -->
+                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Proyecto arquitectónico moderno">
                     </div>
                 </div>
-                <div style="flex: 1; min-width: 280px; max-width: 500px;">
-                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">Envíenos su Consulta</h3>
-                    <form style="padding:20px; background-color:var(--light-bg); border-radius:var(--border-radius); box-shadow:var(--box-shadow);">
-                        <div style="margin-bottom:15px;"><label for="name" style="display:block; margin-bottom:5px; font-weight:500;">Nombre:</label><input type="text" id="name" name="name" required style="width:calc(100% - 22px); padding:10px; border:1px solid #ccc; border-radius:4px;"></div>
-                        <div style="margin-bottom:15px;"><label for="email" style="display:block; margin-bottom:5px; font-weight:500;">Email:</label><input type="email" id="email" name="email" required style="width:calc(100% - 22px); padding:10px; border:1px solid #ccc; border-radius:4px;"></div>
-                        <div style="margin-bottom:15px;"><label for="message" style="display:block; margin-bottom:5px; font-weight:500;">Mensaje:</label><textarea id="message" name="message" rows="4" required style="width:calc(100% - 22px); padding:10px; border:1px solid #ccc; border-radius:4px;"></textarea></div>
-                        <button type="submit" class="cta-button" style="border:none; cursor:pointer; display:block; width:100%;">Enviar Consulta</button>
-                    </form>
+            </div>
+        </section>
+
+        <!-- PROYECTOS DESTACADOS -->
+        <section id="proyectos" class="fs-section">
+            <div class="container">
+                <h2 data-aos="fade-up">Proyectos que Inspiran</h2>
+                <p data-aos="fade-up" data-aos-delay="100" style="max-width: 700px; margin-left:auto; margin-right:auto; opacity:0.8;">Descubra una selección de nuestros desarrollos más emblemáticos, donde la visión arquitectónica y la calidad constructiva se unen para crear valor duradero.</p>
+                <div class="projects-grid">
+                    <!-- Proyecto 1 -->
+                    <div class="project-card" data-aos="fade-up" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-perspective="1000">
+                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Interior de Lujo">
+                        <div class="project-card-content">
+                            <h3>Residencias Urban Lux</h3>
+                            <p>Departamentos de alta gama en el corazón de la ciudad, combinando diseño sofisticado y amenities exclusivos.</p>
+                            <a href="#" class="details-link">Ver Detalles &rarr;</a>
+                        </div>
+                    </div>
+                    <!-- Proyecto 2 -->
+                    <div class="project-card" data-aos="fade-up" data-aos-delay="150" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-perspective="1000">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Oficinas Modernas">
+                        <div class="project-card-content">
+                            <h3>Torre Corporativa Quantum</h3>
+                            <p>Espacios de oficinas inteligentes y sostenibles, diseñados para impulsar la productividad y el bienestar.</p>
+                            <a href="#" class="details-link">Ver Detalles &rarr;</a>
+                        </div>
+                    </div>
+                    <!-- Proyecto 3 -->
+                    <div class="project-card" data-aos="fade-up" data-aos-delay="300" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-perspective="1000">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Desarrollo Sustentable">
+                        <div class="project-card-content">
+                            <h3>Eco Hábitat Piren</h3>
+                            <p>Un innovador desarrollo forestal y residencial que integra la naturaleza con un estilo de vida moderno.</p>
+                            <a href="#" class="details-link">Ver Detalles &rarr;</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer>
-        <div class="container">
-            <p>&copy; <span id="currentYear"></span> PIREN S.A. Todos los derechos reservados.</p>
-            <p>Desarrollo Inmobiliario y Forestal en Buenos Aires.</p>
-        </div>
+        <!-- VALORES / FILOSOFÍA -->
+        <section id="valores" class="fs-section">
+            <div class="container">
+                <h2 data-aos="fade-up">Nuestra Filosofía de Trabajo</h2>
+                <p data-aos="fade-up" data-aos-delay="100" style="max-width: 700px; margin-left:auto; margin-right:auto; opacity:0.8;">Guiados por principios sólidos, cada proyecto es un reflejo de nuestro compromiso con la excelencia y la visión a futuro.</p>
+                <div class="values-grid">
+                    <div class="value-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="icon">
+                            <!-- Icono SVG de Innovación (Ejemplo: bombilla) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-7.071 17.071A9.932 9.932 0 0012 22a10 10 0 007.071-2.929A10 10 0 0012 2zm0 18a8 8 0 01-5.657-2.343A8 8 0 0112 4a8 8 0 015.657 13.657A8 8 0 0112 20zm-1-6h2v-2a3 3 0 00-3-3H8.5A1.5 1.5 0 007 10.5V12h2v2H7v2h2v-2zm5-1a1 1 0 100-2 1 1 0 000 2zM10 8a1 1 0 100-2 1 1 0 000 2z"/></svg>
+                        </div>
+                        <h3>Innovación Constante</h3>
+                        <p>Buscamos continuamente nuevas tecnologías y enfoques para superar los estándares y ofrecer soluciones de vanguardia.</p>
+                    </div>
+                    <div class="value-item" data-aos="fade-up" data-aos-delay="350">
+                        <div class="icon">
+                            <!-- Icono SVG de Calidad (Ejemplo: medalla) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2l2.343 6.09L21 9.27l-5.07 4.29L17.657 20 12 16.5l-5.657 3.5L7.07 13.56 2 9.27l6.657-1.18L12 2zm0 3.236L10.062 11H4.43l4.41 3.618-1.682 5.146L12 17.04l4.84 2.724-1.682-5.146L19.57 11h-5.632L12 5.236z"/></svg>
+                        </div>
+                        <h3>Compromiso con la Calidad</h3>
+                        <p>Desde la concepción hasta la entrega, la excelencia en cada detalle es nuestra máxima prioridad.</p>
+                    </div>
+                    <div class="value-item" data-aos="fade-up" data-aos-delay="500">
+                        <div class="icon">
+                            <!-- Icono SVG de Sostenibilidad (Ejemplo: hoja) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.46-10.41L12 14.17l-4.46-6.58A6.002 6.002 0 0112 6c1.11 0 2.14.3 3.04.83l1.42-2.09zM12 18c-1.72 0-3.26-.87-4.18-2.19l2.35-3.46 1.83 2.74 1.83-2.74 2.35 3.46C15.26 17.13 13.72 18 12 18z"/></svg>
+                        </div>
+                        <h3>Visión Sostenible</h3>
+                        <p>Desarrollamos proyectos que respetan el medio ambiente y promueven un futuro más verde y equilibrado.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACTO -->
+        <section id="contacto" class="fs-section">
+            <div class="container">
+                <h2 data-aos="fade-up">Hablemos de su Próximo Proyecto</h2>
+                <div class="contact-wrapper" data-aos="fade-up" data-aos-delay="200">
+                    <div class="contact-info">
+                        <h3>Información de Contacto</h3>
+                        <p>Estamos listos para escuchar sus ideas y convertirlas en realidad. Contáctenos para explorar oportunidades de inversión o conocer más sobre nuestros servicios.</p>
+                        <div class="info-item">
+                            <!-- Icono de ubicación -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            <span>Arenales 2902 1° A, CABA, Argentina</span>
+                        </div>
+                        <div class="info-item">
+                            <!-- Icono de teléfono -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                            <span>+54 9 11 4484 4429</span>
+                        </div>
+                        <div class="info-item">
+                            <!-- Icono de email -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            <a href="mailto:pirensa@movil.cloud">pirensa@movil.cloud</a>
+                        </div>
+                    </div>
+                    <div class="contact-form-container">
+                        <h3>Envíenos un Mensaje</h3>
+                        <form class="contact-form">
+                            <input type="text" name="name" placeholder="Su Nombre Completo" required>
+                            <input type="email" name="email" placeholder="Su Correo Electrónico" required>
+                            <textarea name="message" rows="5" placeholder="Su Mensaje" required></textarea>
+                            <button type="submit">Enviar Mensaje</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="map-container" data-aos="fade-up" data-aos-delay="300">
+                    <!-- Aquí se podría integrar un mapa de Google Maps o similar -->
+                    <p style="color: #888;">[Ubicación del Mapa Aquí]</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="main-footer">
+        <p>&copy; <span id="currentYear"></span> PIREN S.A. Todos los derechos reservados. Innovación Inmobiliaria.</p>
+        <p>Diseñado con visión de futuro.</p>
     </footer>
 
+    <!-- AOS.js -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Vanilla-Tilt.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+
     <script>
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-        const pageHeader = document.getElementById('pageHeader');
-        const mainNav = document.getElementById('mainNav');
-        const menuToggle = document.getElementById('menuToggle');
-        const navMenu = document.getElementById('navMenu');
-        const navLinks = navMenu.querySelectorAll('a');
-
-        // Función para ajustar el 'top' de la navegación sticky
-        function adjustNavTop() {
-            if (pageHeader && mainNav) {
-                const headerHeight = pageHeader.offsetHeight;
-                mainNav.style.top = headerHeight + 'px';
-                document.documentElement.style.setProperty('--header-height-approx', headerHeight + 'px'); // Actualiza variable CSS
-            }
-        }
-
-        // Menú Hamburguesa
-        menuToggle.addEventListener('click', () => {
-            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
-            menuToggle.setAttribute('aria-expanded', !isExpanded);
-            navMenu.classList.toggle('active');
+        // Inicializar AOS
+        AOS.init({
+            duration: 800, // Duración de la animación
+            once: false, // La animación se repite al scrollear hacia arriba y abajo
+            offset: 50, // Offset (en px) desde el borde original del elemento
         });
 
-        // Cerrar menú al hacer clic en un enlace (para SPA behavior)
+        // Inicializar Vanilla Tilt para las tarjetas de proyecto
+        VanillaTilt.init(document.querySelectorAll(".project-card"), {
+            max: 8,       // Inclinación máxima
+            speed: 400,   // Velocidad de la animación
+            glare: true,  // Efecto de brillo
+            "max-glare": 0.3 // Intensidad del brillo
+        });
+
+        // Manejo del 100vh en móviles (corrige problema con barras de navegador)
+        const setVhVariable = () => {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        };
+        window.addEventListener('resize', setVhVariable);
+        window.addEventListener('load', setVhVariable);
+        setVhVariable(); // Llamada inicial
+
+        // Navegación Principal
+        const mainHeader = document.getElementById('mainHeader');
+        const menuToggle = document.getElementById('menuToggle');
+        const mainNav = document.getElementById('mainNav');
+        const navLinks = mainNav.querySelectorAll('a');
+
+        // Cambiar fondo del header al hacer scroll
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                mainHeader.classList.add('scrolled');
+            } else {
+                mainHeader.classList.remove('scrolled');
+            }
+        });
+
+        // Toggle del menú móvil
+        menuToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+            menuToggle.classList.toggle('active'); // Para animar el botón hamburguesa
+        });
+
+        // Cerrar menú móvil al hacer clic en un enlace
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
-                if (navMenu.classList.contains('active')) {
-                    navMenu.classList.remove('active');
-                    menuToggle.setAttribute('aria-expanded', 'false');
+                if (mainNav.classList.contains('active')) {
+                    mainNav.classList.remove('active');
+                    menuToggle.classList.remove('active');
                 }
             });
         });
-        
-        // Scrollspy
-        const sections = document.querySelectorAll("section[id]");
-        function updateActiveNavLink() {
-            let currentSectionId = "";
-            const scrollOffset = pageHeader.offsetHeight + mainNav.offsetHeight + 20;
 
-            sections.forEach((section) => {
+        // Actualizar enlace activo en la navegación al hacer scroll
+        const sections = document.querySelectorAll('section[id]');
+        function updateActiveLink() {
+            let current = '';
+            sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - scrollOffset) {
-                    currentSectionId = section.getAttribute("id");
+                // Ajustar el offset para que la sección se active un poco antes de llegar al tope
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - sectionHeight / 3) ) { 
+                    current = section.getAttribute('id');
                 }
             });
 
-            navLinks.forEach((link) => {
-                link.classList.remove("active");
-                // Compara el href (ej. "#historia") con el id de la sección actual
-                if (link.getAttribute("href").substring(1) === currentSectionId) {
-                    link.classList.add("active");
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
                 }
             });
+             // Asegurar que "Inicio" esté activo si no hay otra sección (al tope de la página)
+            if (!current && pageYOffset < sections[0].offsetTop - sections[0].clientHeight / 3) {
+                const homeLink = document.querySelector('.main-nav a[href="#hero"]');
+                if(homeLink) homeLink.classList.add('active');
+            }
         }
+        window.addEventListener('scroll', updateActiveLink);
+        updateActiveLink(); // Llamada inicial
+
+        // Año actual en el footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Opcional: Full-screen scroll snapping (puede requerir más JS o CSS scroll-snap-type)
+        // Por ahora, el scroll es suave (`scroll-behavior: smooth;`)
+        // Para un snapping real, se necesitaría una lógica más compleja o CSS scroll-snap.
+        // CSS Scroll Snap (básico):
+        // En .fullscreen-wrapper: scroll-snap-type: y mandatory;
+        // En .fs-section: scroll-snap-align: start;
+        // Esto tiene limitaciones y puede no ser tan "suave" como un fullPage.js
         
-        // Para animación de #mercado con Intersection Observer (opcional, más avanzado)
-        const mercadoSection = document.getElementById('mercado');
-        if (mercadoSection) {
-            const observerOptions = {
-                root: null, // viewport
-                rootMargin: '0px',
-                threshold: 0.1 // 10% de la sección visible
-            };
-
-            const observerCallback = (entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-section');
-                        // observer.unobserve(entry.target); // Descomentar si solo quieres que la animación se ejecute una vez
-                    } else {
-                         // entry.target.classList.remove('animate-section'); // Descomentar para repetir al scrollear de nuevo
-                    }
-                });
-            };
-            const mercadoObserver = new IntersectionObserver(observerCallback, observerOptions);
-            mercadoObserver.observe(mercadoSection);
+        // Placeholder para el formulario de contacto
+        const contactForm = document.querySelector('.contact-form');
+        if(contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Formulario enviado (simulación). ¡Gracias por contactarnos!');
+                this.reset();
+            });
         }
-
-
-        // Event listeners
-        window.addEventListener('load', () => {
-            adjustNavTop();
-            updateActiveNavLink(); // Llama al scrollspy al cargar
-        });
-        window.addEventListener('resize', adjustNavTop);
-        window.addEventListener('scroll', updateActiveNavLink);
-
-        // Llamada inicial por si acaso
-        adjustNavTop();
 
     </script>
-
 </body>
 </html>
